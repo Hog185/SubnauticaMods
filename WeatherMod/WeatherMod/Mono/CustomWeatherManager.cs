@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using WeatherMod.WeatherEvents;
 using Random = UnityEngine.Random;
@@ -30,7 +30,8 @@ public class CustomWeatherManager : MonoBehaviour
         new Thunderstorm(),
         new GoldenThunderstorm(),
         new Foggy(),
-        new Windy()
+        new Windy(),
+        new Hurricane()
     };
     
     private void Awake()
