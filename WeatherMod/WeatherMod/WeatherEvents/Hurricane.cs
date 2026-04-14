@@ -20,22 +20,36 @@ public class Hurricane : WeatherEvent
             WeatherMaterialUtils.ApplyRainMaterial(renderer);
         }
 
-        var smokeClouds = CloudUtils.GetStormCloudEffect();
-        
-        smokeClouds.transform.parent = effectPrefab.transform;
-        smokeClouds.transform.localPosition = Vector3.up * 350;
-        
-        smokeClouds.gameObject.SetActive(true);
-        
+        var stormClouds = CloudUtils.GetStormCloudEffect();
+        if (stormClouds != null)
+        {
+            stormClouds.transform.SetParent(effectPrefab.transform, worldPositionStays: false);
+            stormClouds.localPosition = Vector3.up * 350;
+            stormClouds.gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogWarning("[Hurricane] Storm cloud effect not found. Skipping cloud setup.");
+        }
+
         effectPrefab.AddComponent<AlignWithCamera>();
-        effectPrefab.AddComponent<LightningSpawner>();
-        effectPrefab.AddComponent<LightningSpawner>();
-        effectPrefab.AddComponent<LightningSpawner>();
-        effectPrefab.AddComponent<LightningSpawner>();
-        effectPrefab.AddComponent<DisableWhenCameraUnderwater>();
         
-        effectPrefab.AddComponent<WaterSplashVfxController>().affectedTransform =
-            effectPrefab.transform.Find("WaterSplashes");
+        for (int i = 0; i < 4; i++)
+        {
+            effectPrefab.AddComponent<LightningSpawner>();
+        }
+        
+        effectPrefab.AddComponent<DisableWhenCameraUnderwater>();
+
+        var waterSplashes = effectPrefab.transform.Find("WaterSplashes");
+        if (waterSplashes != null)
+        {
+            effectPrefab.AddComponent<WaterSplashVfxController>().affectedTransform = waterSplashes;
+        }
+        else
+        {
+            Debug.LogWarning("[Hurricane] 'WaterSplashes' transform not found. Skipping splash VFX controller.");
+        }
     }
 
     protected override void OnEventEnd(GameObject effectPrefab)
